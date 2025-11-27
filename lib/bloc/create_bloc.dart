@@ -65,7 +65,6 @@ class CreateBloc extends Bloc<CreateEvent, CreateState> {
       }
     });
     on<CreateQzEvent>((event, emit) {
-      print(Parsering.allElementsHaveContent(state.fakeAnswers));
       if (state.pack.trim() != '' &&
           state.question.trim() != '' &&
           state.answer.trim() != '') {

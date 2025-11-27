@@ -69,7 +69,7 @@ class DiscoveryScreen extends StatelessWidget {
           Navigator.pushNamed(
             context,
             ViewPackScreen.routeName,
-            arguments: ViewPackArguments(packId, packName),
+            arguments: ViewPackArguments(packId, packName, packDescription),
           );
         },
       ),

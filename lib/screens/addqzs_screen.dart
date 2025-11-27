@@ -14,12 +14,18 @@ class AddQzsScreen extends StatelessWidget {
     final args = ModalRoute.of(context)!.settings.arguments as AddQzsArguments;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Añadir Preguntas'), centerTitle: true),
+      appBar: AppBar(title: Text('Añadir desde JSON'), centerTitle: true),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         child: Column(
           children: [
-            Expanded(child: TextField(controller: ctrl, maxLines: 100)),
+            Expanded(
+              child: TextField(
+                controller: ctrl,
+                maxLines: 100,
+                decoration: InputDecoration(hintText: 'Pegue su JSON aqui'),
+              ),
+            ),
             SizedBox(height: 12),
             FilledButton(
               onPressed: () {
@@ -77,7 +83,7 @@ class AddQzsScreen extends StatelessWidget {
                   },
                 );
               },
-              child: Text('Verificar y Agregar Preguntas'),
+              child: Text('Verificar JSON'),
             ),
             SizedBox(height: 6),
           ],

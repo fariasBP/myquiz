@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myquiz/bloc/app_bloc.dart';
 import 'package:myquiz/screens/create_screen.dart';
 import 'package:myquiz/screens/discovery_screen.dart';
+import 'package:myquiz/screens/profile_screen.dart';
 import 'package:myquiz/widgets/menu_widget.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -12,21 +13,10 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).secondaryHeaderColor,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(35),
-            bottomRight: Radius.circular(35),
-          ),
-        ),
-        child: BlocBuilder<AppBloc, AppState>(
-          builder: (context, state) => _getScreen(state.nav),
-        ),
+      body: BlocBuilder<AppBloc, AppState>(
+        builder: (context, state) => _getScreen(state.nav),
       ),
+
       bottomNavigationBar: MenuWidget(),
     );
   }
@@ -38,7 +28,7 @@ class HomeScreen extends StatelessWidget {
       case 1:
         return CreateScreen();
       case 2:
-        return Center(child: Text('Stats Screen'));
+        return ProfileScreen();
       default:
         return DiscoveryScreen();
     }

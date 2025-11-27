@@ -82,11 +82,12 @@ class Parsering {
     return result;
   }
 
-  static Widget renderParsedContent(
+  static Column renderParsedContent(
     List<Map<String, String>> parsedContent, {
     TextStyle? textStyle,
   }) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: _buildContentWidgets(parsedContent, textStyle: textStyle),
     );
@@ -122,6 +123,7 @@ class Parsering {
             child: Center(
               child: Math.tex(
                 content,
+
                 mathStyle: MathStyle.display,
                 textStyle: textStyle,
                 onErrorFallback: (error) => Text(

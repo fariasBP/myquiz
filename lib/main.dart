@@ -12,12 +12,16 @@ import 'package:myquiz/screens/addqzs_screen.dart';
 import 'package:myquiz/screens/create_pack.dart';
 import 'package:myquiz/screens/home_screen.dart';
 import 'package:myquiz/screens/play_screen.dart';
+import 'package:myquiz/screens/profile_screen.dart';
 import 'package:myquiz/screens/score_screen.dart';
 import 'package:myquiz/screens/select_pack.dart';
 import 'package:myquiz/screens/viewpack_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final prefs = GlobalPrefs();
+  await prefs.initPrefs();
 
   Loon.configure(
     persistor: Persistor.current(
@@ -31,9 +35,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
-  final GlobalPrefs _globalPrefs = GlobalPrefs();
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,22 +47,27 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => QzBloc()),
         BlocProvider(create: (_) => PlayBloc()),
       ],
-      child: MaterialApp(
-        title: 'Question App',
-        debugShowCheckedModeBanner: false,
-        home: HomeScreen(),
-        routes: {
-          HomeScreen.routeName: (context) => const HomeScreen(),
-          CreatePack.routeName: (context) => CreatePack(),
-          SelectPack.routeName: (context) => SelectPack(),
-          ViewPackScreen.routeName: (context) => ViewPackScreen(),
-          AddQzsScreen.routeName: (context) => AddQzsScreen(),
-          PlayScreen.routeName: (context) => PlayScreen(),
-          ScoreScreen.routeName: (context) => ScoreScreen(),
+      child: BlocBuilder<AppBloc, AppState>(
+        builder: (context, state) {
+          return MaterialApp(
+            title: 'My Quiz',
+            debugShowCheckedModeBanner: false,
+            home: HomeScreen(),
+            routes: {
+              HomeScreen.routeName: (context) => const HomeScreen(),
+              CreatePack.routeName: (context) => CreatePack(),
+              SelectPack.routeName: (context) => SelectPack(),
+              ViewPackScreen.routeName: (context) => ViewPackScreen(),
+              AddQzsScreen.routeName: (context) => AddQzsScreen(),
+              PlayScreen.routeName: (context) => PlayScreen(),
+              ScoreScreen.routeName: (context) => ScoreScreen(),
+              ProfileScreen.routeName: (context) => ProfileScreen(),
+            },
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            themeMode: state.mode,
+          );
         },
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        themeMode: ThemeMode.light,
       ),
     );
   }

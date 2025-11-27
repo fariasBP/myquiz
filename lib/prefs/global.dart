@@ -15,12 +15,11 @@ class GlobalPrefs {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  bool get theme {
-    // true: light, false: dark
+  bool get isDark {
     return _prefs.getBool(GlobalPrefs.MODE) ?? true;
   }
 
-  set theme(bool mode) {
+  set isDark(bool mode) {
     _prefs.setBool(GlobalPrefs.MODE, mode);
   }
 }

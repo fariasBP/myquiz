@@ -5,7 +5,10 @@ import 'package:myquiz/config/scripts.dart';
 import 'package:myquiz/screens/select_pack.dart';
 
 class CreateScreen extends StatelessWidget {
-  const CreateScreen({super.key});
+  CreateScreen({super.key});
+
+  final TextEditingController questionController = TextEditingController();
+  final TextEditingController answerController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,7 @@ class CreateScreen extends StatelessWidget {
                   ? Container()
                   : buildPreview(context, state.question),
               TextFormWidget(
+                controller: questionController,
                 hint: 'Escriba su pregunta en Tex aqui',
                 onChaged: (value) {
                   BlocProvider.of<CreateBloc>(
@@ -37,6 +41,7 @@ class CreateScreen extends StatelessWidget {
                   ? Container()
                   : buildPreview(context, state.answer),
               TextFormWidget(
+                controller: answerController,
                 hint: 'Escriba su respuesta en Tex aqui',
                 onChaged: (value) {
                   BlocProvider.of<CreateBloc>(
@@ -77,6 +82,11 @@ class CreateScreen extends StatelessWidget {
                 child: FilledButton(
                   onPressed: () {
                     BlocProvider.of<CreateBloc>(context).add(CreateQzEvent());
+                    questionController.clear();
+                    answerController.clear();
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Pregunta Creada')));
                   },
                   child: Text('Crear Pregunta'),
                 ),
@@ -130,11 +140,13 @@ class CreateScreen extends StatelessWidget {
 class TextFormWidget extends StatelessWidget {
   const TextFormWidget({
     super.key,
+    this.controller,
     required this.onChaged,
     required this.hint,
     this.lines = 4,
   });
 
+  final TextEditingController? controller;
   final void Function(String)? onChaged;
   final int lines;
   final String hint;
@@ -142,6 +154,7 @@ class TextFormWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       maxLines: lines,
       decoration: InputDecoration(
         hintText: hint,

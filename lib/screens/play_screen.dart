@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myquiz/bloc/play_bloc.dart';
+import 'package:myquiz/config/scripts.dart';
 import 'package:myquiz/screens/score_screen.dart';
 
 class PlayScreen extends StatelessWidget {
@@ -12,79 +13,91 @@ class PlayScreen extends StatelessWidget {
     return Scaffold(
       body: BlocBuilder<PlayBloc, PlayState>(
         builder: (context, state) {
-          return Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(width: 45),
-                      Text(
-                        '${state.currentIndex + 1}/${state.qzs.length}',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      state.qzs[state.currentIndex].data.question,
-                      style: TextStyle(fontSize: 24),
+          return SafeArea(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(width: 45),
+                        Text(
+                          '${state.currentIndex + 1}/${state.qzs.length}',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.close),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: (state.qzs[state.currentIndex].data.fake.isNotEmpty)
-                      ? Column(
-                          children: state.options
-                              .map(
-                                (qz) => BoxOptionsAnsWidget(
-                                  index: state.currentIndex,
-                                  option: qz,
-                                  answer:
-                                      state.qzs[state.currentIndex].data.answer,
-                                  show: state.show,
-                                ),
-                              )
-                              .toList(),
-                        )
-                      : Container(),
-                ),
-                Center(
-                  child: TextButton(
-                    onPressed: () {
-                      if (state.show) {
-                        if (state.currentIndex < state.qzs.length - 1) {
+                  Expanded(
+                    child: Center(
+                      child: Parsering.renderParsedContent(
+                        Parsering.parseLatexText(
+                          state.qzs[state.currentIndex].data.question,
+                        ),
+                        textStyle: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: (state.qzs[state.currentIndex].data.fake.isNotEmpty)
+                        ? Column(
+                            children: state.options
+                                .map(
+                                  (qz) => BoxOptionsAnsWidget(
+                                    index: state.currentIndex,
+                                    option: qz,
+                                    answer: state
+                                        .qzs[state.currentIndex]
+                                        .data
+                                        .answer,
+                                    show: state.show,
+                                  ),
+                                )
+                                .toList(),
+                          )
+                        : Container(),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                      onPressed: () {
+                        if (state.show) {
+                          if (state.currentIndex < state.qzs.length - 1) {
+                            BlocProvider.of<PlayBloc>(
+                              context,
+                            ).add(NextQzPlayEvent());
+                          } else {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              ScoreScreen.routeName,
+                            );
+                          }
+                        } else {
                           BlocProvider.of<PlayBloc>(
                             context,
-                          ).add(NextQzPlayEvent());
-                        } else {
-                          Navigator.pushReplacementNamed(
+                          ).add(ShowAnswerPlayEvent());
+                          BlocProvider.of<PlayBloc>(
                             context,
-                            ScoreScreen.routeName,
-                          );
+                          ).add(WrongAnswerPlayEvent(state.currentIndex));
                         }
-                        return;
-                      }
-                      BlocProvider.of<PlayBloc>(
-                        context,
-                      ).add(ShowAnswerPlayEvent());
-                    },
-                    child: Text(state.show ? 'Siguiente' : 'Mostrar respuesta'),
+                      },
+                      child: Text(
+                        state.show ? 'Siguiente' : 'Mostrar respuesta',
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
@@ -129,10 +142,15 @@ class BoxOptionsAnsWidget extends StatelessWidget {
               ? (option == answer
                     ? Colors.green.withOpacity(0.5)
                     : Colors.red.withOpacity(0.5))
-              : null,
-          border: Border.all(color: Theme.of(context).colorScheme.secondary),
+              : Theme.of(context).colorScheme.surfaceContainer,
+          border: Border.all(
+            color: Theme.of(context).colorScheme.surfaceContainer,
+          ),
         ),
-        child: Text(option),
+        child: Parsering.renderParsedContent(
+          Parsering.parseLatexText(option),
+          textStyle: Theme.of(context).textTheme.bodyLarge,
+        ),
       ),
     );
   }
